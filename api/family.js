@@ -1,4 +1,10 @@
-import { kv } from '@vercel/kv';
+import { Redis } from '@upstash/redis';
+
+// Initialize Redis client
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN,
+});
 
 export default async function handler(req, res) {
   // Enable CORS
@@ -15,18 +21,18 @@ export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       // Get family tree data
-      const data = await kv.get('familyTree');
+      const data = await redis.get('familyTree');
       res.status(200).json(data || []);
     } 
     else if (req.method === 'POST') {
       // Save family tree data
       const { people } = req.body;
-      await kv.set('familyTree', people);
+      await redis.set('familyTree', people);
       res.status(200).json({ success: true });
     }
     else if (req.method === 'DELETE') {
       // Clear all data
-      await kv.del('familyTree');
+      await redis.del('familyTree');
       res.status(200).json({ success: true });
     }
     else {
