@@ -422,11 +422,11 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>👨‍👩‍👧‍👦 Otto Family Tree Builder</h1>
+            <h1>Otto Family Tree Builder</h1>
             <div class="header-actions">
                 <button class="btn btn-primary" onclick="openAddModal('root')">Add the OG Otto</button>
-                <button class="btn btn-download" onclick="downloadTree()">📷 Download Image</button>
-                <button class="btn btn-danger" onclick="clearAll()">🗑️ Clear All</button>
+                <button class="btn btn-download" onclick="downloadTree()">Download Family Tree</button>
+                <button class="btn btn-danger" onclick="clearAll()">Clear Family Tree</button>
             </div>
         </div>
 
@@ -483,7 +483,6 @@
                 const container = document.getElementById('treeContainer');
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">👨‍👩‍👧‍👦</div>
                         <p style="font-size: 18px;">No family members yet.</p>
                     </div>
                 `;
@@ -522,11 +521,11 @@
             if (age < 13) return '0-12 (Child)';
             if (age < 20) return '13-19 (Teen)';
             if (age < 30) return '20-29 (Young Adult)';
-            if (age < 40) return '30-39 (Adult)';
-            if (age < 50) return '40-49 (Middle Age)';
-            if (age < 60) return '50-59 (Mature)';
-            if (age < 70) return '60-69 (Senior)';
-            return '70+ (Elder)';
+            if (age < 40) return '30-39 (3rd Floor)';
+            if (age < 50) return '40-49 (4th Floor)';
+            if (age < 60) return '50-59 (5th Floor)';
+            if (age < 70) return '60-69 (6th Floor)';
+            return '70+ (Senior Citizen)';
         }
 
         function getGenerationLevel(person) {
@@ -536,7 +535,7 @@
         }
 
         function getGenerationName(level) {
-            const names = ['Root/Grandparents', 'Parents', 'Children', 'Grandchildren', 'Great-Grandchildren', 'Great-Great-Grandchildren'];
+            const names = ['Grandparents', 'Parents', 'Children', 'Grandchildren', 'Great Grandchildren', 'Great Great Grandchildren'];
             return names[level] || `Generation ${level}`;
         }
 
@@ -610,11 +609,11 @@
             const title = document.getElementById('modalTitle');
             
             if (type === 'root') {
-                title.textContent = 'Add Root Person';
+                title.textContent = 'Add Family Member';
             } else if (type === 'child') {
                 title.textContent = 'Add Child';
             } else if (type === 'spouse') {
-                title.textContent = 'Add Spouse';
+                title.textContent = 'Add In-love';
             }
             
             document.getElementById('nameInput').value = '';
@@ -773,13 +772,13 @@
                         ${person.name.charAt(0).toUpperCase()}
                     </div>
                     <div class="person-name">${person.name}</div>
-                    <div class="person-info">${person.gender}</div>
+                    <div class="person-info">${person.gender.toUpperCase()}</div>
                     <div class="person-age">${ageText}</div>
                     <div class="person-actions">
-                        ${isMainNode && !hasSpouse ? `<button class="btn btn-spouse" onclick="openAddModal('spouse', null, '${person.id}')">💕</button>` : ''}
-                        <button class="btn btn-success" onclick="openAddModal('child', '${parentIdForChild}')">👶</button>
-                        <button class="btn btn-edit" onclick="openEditModal('${person.id}')">✏️</button>
-                        <button class="btn btn-danger" onclick="deletePerson('${person.id}')">🗑️</button>
+                        ${isMainNode && !hasSpouse ? `<button class="btn btn-spouse" onclick="openAddModal('spouse', null, '${person.id}')">Add In-Love</button>` : ''}
+                        <button class="btn btn-success" onclick="openAddModal('child', '${parentIdForChild}')">Add Child</button>
+                        <button class="btn btn-edit" onclick="openEditModal('${person.id}')">Edit</button>
+                        <button class="btn btn-danger" onclick="deletePerson('${person.id}')">Delete</button>
                     </div>
                 </div>
             `;
@@ -826,7 +825,6 @@
             if (rootPeople.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">👨‍👩‍👧‍👦</div>
                         <p style="font-size: 18px;">No family members yet.</p>
                     </div>
                 `;
