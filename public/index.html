@@ -459,35 +459,10 @@
     </style>
 </head>
 <body>
-    <!-- Login Screen -->
-    <div class="login-container" id="loginScreen">
-        <div class="login-box">
-            <div class="login-header">
-                <h1>Admin Login</h1>
-                <p>Otto Family Tree Builder</p>
-            </div>
-            <div class="form-group">
-                <label class="form-label">Username</label>
-                <input type="text" class="form-input" id="loginUsername" placeholder="Enter username">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Password</label>
-                <input type="password" class="form-input" id="loginPassword" placeholder="Enter password">
-            </div>
-            <button class="btn btn-primary" style="width: 100%;" onclick="handleLogin()">Login</button>
-            <div class="error-message" id="loginError" style="display: none;"></div>
-        </div>
-    </div>
-
     <!-- Admin Dashboard -->
-    <div class="container" id="adminDashboard" style="display: none;">
+    <div class="container" id="adminDashboard">
         <div class="header">
-            <h1>Otto Family Tree - Admin Interface</h1>
-            <div class="header-actions">
-                <button class="btn btn-primary" onclick="openAddModal('root')">Add the OG Otto</button>
-                <button class="btn btn-danger" onclick="clearAll()">Clear All</button>
-                <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
-            </div>
+            <h1>Otto Family Tree</h1>
         </div>
 
         <div class="stats-container" id="statsContainer" style="display: none;">
@@ -529,46 +504,6 @@
         let people = [];
         let currentAction = {};
         let isLoggedIn = false;
-
-        // Admin credentials (In production, use API authentication)
-        const ADMIN_USERNAME = "admin";
-        const ADMIN_PASSWORD = "otto2025";
-
-        function handleLogin() {
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-            const errorDiv = document.getElementById('loginError');
-
-            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-                isLoggedIn = true;
-                sessionStorage.setItem('adminLoggedIn', 'true');
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminDashboard').style.display = 'block';
-                loadData();
-            } else {
-                errorDiv.textContent = 'Invalid username or password';
-                errorDiv.style.display = 'block';
-            }
-        }
-
-        function handleLogout() {
-            isLoggedIn = false;
-            sessionStorage.removeItem('adminLoggedIn');
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.getElementById('adminDashboard').style.display = 'none';
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-        }
-
-        function checkAuth() {
-            const loggedIn = sessionStorage.getItem('adminLoggedIn');
-            if (loggedIn === 'true') {
-                isLoggedIn = true;
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminDashboard').style.display = 'block';
-                loadData();
-            }
-        }
 
         async function loadData() {
             try {
@@ -943,7 +878,7 @@
             container.innerHTML = html;
         }
 
-        window.addEventListener('load', checkAuth);
+        window.addEventListener('load', loadData);
     </script>
 </body>
 </html>
