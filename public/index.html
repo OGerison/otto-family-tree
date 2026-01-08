@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Otto Family Tree Builder</title>
+    <title>Admin - Otto Family Tree</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         * {
@@ -17,6 +17,38 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
+        }
+
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #718096;
+            font-size: 14px;
         }
 
         .container {
@@ -67,13 +99,13 @@
             background: #5568d3;
         }
 
-        .btn-download {
-            background: #38b2ac;
+        .btn-logout {
+            background: #f56565;
             color: white;
         }
 
-        .btn-download:hover {
-            background: #319795;
+        .btn-logout:hover {
+            background: #e53e3e;
         }
 
         .btn-success {
@@ -397,6 +429,13 @@
             font-size: 18px;
         }
 
+        .error-message {
+            color: #f56565;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.3em;
@@ -420,13 +459,34 @@
     </style>
 </head>
 <body>
-    <div class="container">
+    <!-- Login Screen -->
+    <div class="login-container" id="loginScreen">
+        <div class="login-box">
+            <div class="login-header">
+                <h1>Admin Login</h1>
+                <p>Otto Family Tree Builder</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-input" id="loginUsername" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="Enter password">
+            </div>
+            <button class="btn btn-primary" style="width: 100%;" onclick="handleLogin()">Login</button>
+            <div class="error-message" id="loginError" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="container" id="adminDashboard" style="display: none;">
         <div class="header">
-            <h1>Otto Family Tree Builder</h1>
+            <h1>Otto Family Tree - Admin Interface</h1>
             <div class="header-actions">
                 <button class="btn btn-primary" onclick="openAddModal('root')">Add the OG Otto</button>
-                <button class="btn btn-download" onclick="downloadTree()">Download Family Tree</button>
-                <button class="btn btn-danger" onclick="clearAll()">Clear Family Tree</button>
+                <button class="btn btn-danger" onclick="clearAll()">Clear All</button>
+                <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
             </div>
         </div>
 
@@ -468,8 +528,48 @@
     <script>
         let people = [];
         let currentAction = {};
+        let isLoggedIn = false;
 
-        // Load data from API
+        // Admin credentials (In production, use API authentication)
+        const ADMIN_USERNAME = "admin";
+        const ADMIN_PASSWORD = "otto2025";
+
+        function handleLogin() {
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorDiv = document.getElementById('loginError');
+
+            if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+                isLoggedIn = true;
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                loadData();
+            } else {
+                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        function handleLogout() {
+            isLoggedIn = false;
+            sessionStorage.removeItem('adminLoggedIn');
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('adminDashboard').style.display = 'none';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function checkAuth() {
+            const loggedIn = sessionStorage.getItem('adminLoggedIn');
+            if (loggedIn === 'true') {
+                isLoggedIn = true;
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('adminDashboard').style.display = 'block';
+                loadData();
+            }
+        }
+
         async function loadData() {
             try {
                 const response = await fetch('/api/family');
@@ -489,7 +589,6 @@
             }
         }
 
-        // Save data to API
         async function saveData() {
             try {
                 const response = await fetch('/api/family', {
@@ -521,7 +620,7 @@
             if (age < 13) return '0-12 (Child)';
             if (age < 20) return '13-19 (Teen)';
             if (age < 30) return '20-29 (Young Adult)';
-            if (age < 40) return '30-39 (3rd Floor)';
+            if (age < 40) return '30-39 (Adult)';
             if (age < 50) return '40-49 (4th Floor)';
             if (age < 60) return '50-59 (5th Floor)';
             if (age < 70) return '60-69 (6th Floor)';
@@ -535,7 +634,7 @@
         }
 
         function getGenerationName(level) {
-            const names = ['Grandparents', 'Parents', 'Children', 'Grandchildren', 'Great Grandchildren', 'Great Great Grandchildren'];
+            const names = ['Grandparents', 'Parents', 'Children', 'Grandchildren', 'Great-Grandchildren', 'Great-Great-Grandchildren'];
             return names[level] || `Generation ${level}`;
         }
 
@@ -613,7 +712,7 @@
             } else if (type === 'child') {
                 title.textContent = 'Add Child';
             } else if (type === 'spouse') {
-                title.textContent = 'Add In-love';
+                title.textContent = 'Add Spouse';
             }
             
             document.getElementById('nameInput').value = '';
@@ -844,70 +943,7 @@
             container.innerHTML = html;
         }
 
-        function downloadTree() {
-            if (people.length === 0) {
-                alert('Please add family members before downloading');
-                return;
-            }
-
-            const treeElement = document.querySelector('.tree');
-            
-            if (!treeElement) {
-                alert('No tree to download');
-                return;
-            }
-
-            const downloadContainer = document.createElement('div');
-            downloadContainer.style.position = 'fixed';
-            downloadContainer.style.left = '-10000px';
-            downloadContainer.style.top = '0';
-            downloadContainer.style.width = 'auto';
-            downloadContainer.style.height = 'auto';
-            downloadContainer.style.background = 'white';
-            downloadContainer.style.padding = '40px';
-            downloadContainer.style.overflow = 'visible';
-            
-            const treeClone = treeElement.cloneNode(true);
-            downloadContainer.appendChild(treeClone);
-            document.body.appendChild(downloadContainer);
-
-            setTimeout(() => {
-                const width = downloadContainer.scrollWidth;
-                const height = downloadContainer.scrollHeight;
-                
-                html2canvas(downloadContainer, {
-                    backgroundColor: '#ffffff',
-                    scale: 2,
-                    logging: false,
-                    useCORS: true,
-                    allowTaint: true,
-                    width: width,
-                    height: height,
-                    windowWidth: width,
-                    windowHeight: height,
-                    x: 0,
-                    y: 0,
-                    scrollX: 0,
-                    scrollY: 0
-                }).then(canvas => {
-                    document.body.removeChild(downloadContainer);
-                    
-                    const link = document.createElement('a');
-                    link.download = 'otto-family-tree.png';
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                }).catch(err => {
-                    if (document.body.contains(downloadContainer)) {
-                        document.body.removeChild(downloadContainer);
-                    }
-                    console.error('Error generating image:', err);
-                    alert('Failed to generate image. Please try again.');
-                });
-            }, 500);
-        }
-
-        // Load data when page loads
-        loadData();
+        window.addEventListener('load', checkAuth);
     </script>
 </body>
 </html>
