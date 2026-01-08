@@ -72,6 +72,7 @@
             max-height: 80vh;
         }
 
+        /* ===== TREE STYLES ===== */
         .tree {
             display: flex;
             justify-content: center;
@@ -179,6 +180,20 @@
             padding: 60px 20px;
             color: #a0aec0;
         }
+
+        /* ===============================
+           🔒 HIDE ADMIN CONTROLS
+           =============================== */
+        #addPersonBtn,
+        #editPersonBtn,
+        #deletePersonBtn,
+        #clearBtn,
+        .admin-controls,
+        .admin-actions,
+        .controls,
+        .form-container {
+            display: none !important;
+        }
     </style>
 </head>
 
@@ -210,9 +225,8 @@
             people = await response.json();
             renderTree();
         } catch {
-            document.getElementById('treeContainer').innerHTML = `
-                <div class="empty-state">No family data available.</div>
-            `;
+            document.getElementById('treeContainer').innerHTML =
+                `<div class="empty-state">No family data available.</div>`;
         }
     }
 
@@ -304,5 +318,6 @@
 
     window.onload = loadData;
 </script>
+
 </body>
 </html>
