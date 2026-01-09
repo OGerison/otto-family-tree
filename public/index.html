@@ -573,58 +573,6 @@
                 clearInterval(refreshInterval);
             }
         });
-
-        async function downloadPDF() {
-    const { jsPDF } = window.jspdf;
-    const treeContainer = document.getElementById('treeContainer');
-
-    if (!treeContainer) {
-        alert('Tree not loaded yet');
-        return;
-    }
-
-    // Temporarily expand container so nothing is clipped
-    const originalOverflow = treeContainer.style.overflow;
-    const originalMaxHeight = treeContainer.style.maxHeight;
-
-    treeContainer.style.overflow = 'visible';
-    treeContainer.style.maxHeight = 'none';
-
-    const canvas = await html2canvas(treeContainer, {
-        scale: 2,
-        backgroundColor: '#ffffff',
-        useCORS: true
-    });
-
-    const imgData = canvas.toDataURL('image/png');
-
-    const pdf = new jsPDF('landscape', 'px', 'a4');
-    const pageWidth = pdf.internal.pageSize.getWidth();
-    const pageHeight = pdf.internal.pageSize.getHeight();
-
-    const imgWidth = pageWidth;
-    const imgHeight = canvas.height * imgWidth / canvas.width;
-
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while (heightLeft > 0) {
-        position -= pageHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-    }
-
-    pdf.save('Otto-Family-Tree.pdf');
-
-    // Restore original styles
-    treeContainer.style.overflow = originalOverflow;
-    treeContainer.style.maxHeight = originalMaxHeight;
-    }
-
     </script>
 </body>
 </html>
