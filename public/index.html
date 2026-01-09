@@ -6,6 +6,7 @@
     <title>Otto Family Tree</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -561,6 +562,56 @@
             refreshInterval = setInterval(() => {
                 loadData();
             }, 30000); // 30 seconds
+        }
+
+        // Download PDF function
+        async function downloadPDF() {
+            if (people.length === 0) {
+                alert('No family tree to download');
+                return;
+            }
+
+            const treeElement = document.querySelector('.tree');
+            if (!treeElement) {
+                alert('No tree to download');
+                return;
+            }
+
+            // Show loading message
+            const originalButtonText = event.target.textContent;
+            event.target.textContent = 'Generating PDF...';
+            event.target.disabled = true;
+
+            try {
+                // Use html2pdf.js for better PDF generation
+                const opt = {
+                    margin: 10,
+                    filename: 'otto-family-tree.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { 
+                        scale: 2,
+                        useCORS: true,
+                        logging: false,
+                        backgroundColor: '#ffffff'
+                    },
+                    jsPDF: { 
+                        unit: 'mm', 
+                        format: 'a4', 
+                        orientation: 'landscape' 
+                    }
+                };
+
+                await html2pdf().set(opt).from(treeElement).save();
+
+                // Restore button
+                event.target.textContent = originalButtonText;
+                event.target.disabled = false;
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Failed to generate PDF. Please try again.');
+                event.target.textContent = originalButtonText;
+                event.target.disabled = false;
+            }
         }
 
         // Initial load
