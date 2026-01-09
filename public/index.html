@@ -4,33 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Otto Family Tree</title>
+
+    <!-- Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
             min-height: 100vh;
             padding: 20px;
         }
 
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-        }
+        .container { max-width: 100%; margin: auto; }
 
         .header {
             background: white;
             padding: 20px 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,.2);
             margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
@@ -39,117 +34,43 @@
             gap: 15px;
         }
 
-        h1 {
-            color: #667eea;
-            font-size: 1.8em;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+        h1 { color: #667eea; }
 
         .btn {
             padding: 10px 20px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
             font-weight: 600;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .btn-admin {
-            background: #667eea;
             color: white;
         }
 
-        .btn-admin:hover {
-            background: #5568d3;
-        }
-
-        .btn-download {
-            background: #38b2ac;
-            color: white;
-        }
-
-        .btn-download:hover {
-            background: #319795;
-        }
-
-        .stats-container {
-            background: white;
-            padding: 20px 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 15px;
-        }
-
-        .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 15px;
-            border-radius: 10px;
-            color: white;
-        }
-
-        .stat-title {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .stat-details {
-            font-size: 12px;
-            margin-top: 8px;
-            opacity: 0.9;
-        }
+        .btn-download { background: #38b2ac; }
+        .btn-download:hover { background: #319795; }
 
         .tree-container {
             background: white;
             padding: 40px 20px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            min-height: 400px;
-            overflow-x: auto;
-            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,.2);
+            overflow: auto;
             max-height: 80vh;
         }
 
-        .tree {
-            display: flex;
-            justify-content: center;
-            min-width: fit-content;
-        }
+        .tree { display: flex; justify-content: center; }
 
         .tree ul {
             padding-top: 40px;
-            position: relative;
             display: flex;
-            justify-content: center;
             gap: 20px;
+            position: relative;
         }
 
         .tree li {
-            list-style-type: none;
-            position: relative;
-            padding: 40px 10px 0 10px;
-            display: inline-block;
+            list-style: none;
             text-align: center;
+            padding: 40px 10px 0;
+            position: relative;
         }
 
         .tree li::before {
@@ -157,9 +78,8 @@
             position: absolute;
             top: 0;
             left: 50%;
-            border-left: 2px solid #cbd5e0;
-            width: 0;
             height: 40px;
+            border-left: 2px solid #cbd5e0;
         }
 
         .tree li::after {
@@ -167,463 +87,154 @@
             position: absolute;
             top: 0;
             left: 50%;
+            width: 50%;
             border-top: 2px solid #cbd5e0;
-            width: 50%;
-            height: 40px;
         }
 
-        .tree li:first-child::after {
-            left: 50%;
-            border-left: 2px solid #cbd5e0;
-            border-radius: 10px 0 0 0;
-        }
-
-        .tree li:last-child::after {
-            border-right: 2px solid #cbd5e0;
-            border-radius: 0 10px 0 0;
-            width: 50%;
-            left: 0;
-        }
-
-        .tree li:only-child::after {
-            display: none;
-        }
-
-        .tree li:only-child::before {
-            left: 50%;
-        }
+        .tree li:first-child::after { left: 50%; }
+        .tree li:last-child::after { left: 0; }
 
         .tree > ul > li::before,
-        .tree > ul > li::after {
-            display: none;
-        }
-
-        .tree > ul > li {
-            padding-top: 0;
-        }
-
-        .couple-container {
-            display: inline-flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: center;
-        }
+        .tree > ul > li::after { display: none; }
 
         .person-card {
             background: white;
             border: 3px solid #667eea;
             border-radius: 12px;
             padding: 12px;
+            width: 160px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.15);
             display: inline-flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            width: 160px;
+            gap: 6px;
         }
 
-        .person-avatar {
+        .avatar {
             width: 50px;
             height: 50px;
             border-radius: 50%;
+            color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            font-size: 22px;
             font-weight: bold;
-            font-size: 24px;
         }
 
-        .male {
-            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
-        }
+        .male { background: linear-gradient(135deg, #4299e1, #3182ce); }
+        .female { background: linear-gradient(135deg, #ed64a6, #d53f8c); }
 
-        .female {
-            background: linear-gradient(135deg, #ed64a6 0%, #d53f8c 100%);
-        }
+        .name { font-weight: bold; font-size: 14px; }
+        .age { font-size: 12px; color: #4a5568; }
 
-        .person-name {
-            font-weight: bold;
-            font-size: 14px;
-            color: #2d3748;
-            text-align: center;
-            word-break: break-word;
-        }
-
-        .person-info {
-            font-size: 11px;
-            color: #718096;
-            text-align: center;
-        }
-
-        .person-age {
-            font-size: 12px;
-            color: #4a5568;
-            font-weight: 600;
-        }
-
-        .heart-connector {
-            color: #f56565;
-            font-size: 20px;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 60px 20px;
-            color: #a0aec0;
-        }
-
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            color: #667eea;
-            font-size: 18px;
-        }
-
-        .refresh-info {
-            text-align: center;
-            padding: 12px;
-            background: #e6f0ff;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            color: #4a5568;
-            font-size: 14px;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 1.3em;
-            }
-
-            .person-card {
-                width: 130px;
-                padding: 10px;
-            }
-
-            .person-avatar {
-                width: 40px;
-                height: 40px;
-                font-size: 20px;
-            }
-
-            .person-name {
-                font-size: 12px;
-            }
-        }
+        .couple { display: flex; gap: 10px; align-items: center; }
+        .heart { font-size: 20px; color: #f56565; }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Otto Family Tree</h1>
-            <div class="header-actions">
-                <button class="btn btn-download" onclick="downloadPDF()">📄 Download PDF</button>
-                <a href="admin.html" class="btn btn-admin">🔐 Admin Login</a>
-            </div>
-        </div>
+<div class="container">
 
-        <div class="refresh-info">
-            📊 Tree updates automatically every 30 seconds. Last updated: <span id="lastUpdate">Loading...</span>
-        </div>
-
-        <div class="stats-container" id="statsContainer" style="display: none;">
-            <h2 style="color: #667eea; margin-bottom: 10px;">Family Statistics</h2>
-            <div class="stats-grid" id="statsGrid"></div>
-        </div>
-
-        <div class="tree-container" id="treeContainer">
-            <div class="loading">Loading family tree...</div>
-        </div>
+    <div class="header">
+        <h1>Otto Family Tree</h1>
+        <button class="btn btn-download" onclick="downloadPDF()">📄 Download PDF</button>
     </div>
 
-    <script>
-        let people = [];
-        let refreshInterval;
+    <div class="tree-container" id="treeContainer">
+        <div class="tree" id="tree"></div>
+    </div>
 
-        async function loadData() {
-            try {
-                const response = await fetch('/api/family');
-                if (!response.ok) throw new Error('Failed to load data');
-                const data = await response.json();
-                people = data;
-                renderTree();
-                updateStatistics();
-                updateLastRefreshTime();
-            } catch (error) {
-                console.error('Error loading data:', error);
-                const container = document.getElementById('treeContainer');
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">👨‍👩‍👧‍👦</div>
-                        <p style="font-size: 18px;">No family members yet.</p>
-                    </div>
-                `;
-            }
+</div>
+
+<script>
+/* ---------------- SAMPLE DATA ---------------- */
+const people = [
+    { id: 1, name: "John Otto", gender: "male", birthday: "1950-05-10", spouseId: 2 },
+    { id: 2, name: "Mary Otto", gender: "female", birthday: "1955-03-22", spouseId: 1 },
+    { id: 3, name: "Peter Otto", gender: "male", birthday: "1980-01-15", parentId: 1 },
+    { id: 4, name: "Anna Otto", gender: "female", birthday: "1983-07-30", parentId: 1 }
+];
+
+/* ---------------- UTILITIES ---------------- */
+function age(b) {
+    if (!b) return "Unknown";
+    const d = new Date(b);
+    const t = new Date();
+    let a = t.getFullYear() - d.getFullYear();
+    if (t < new Date(t.getFullYear(), d.getMonth(), d.getDate())) a--;
+    return a + " yrs";
+}
+
+function card(p) {
+    return `
+        <div class="person-card">
+            <div class="avatar ${p.gender}">
+                ${p.name[0]}
+            </div>
+            <div class="name">${p.name}</div>
+            <div class="age">${age(p.birthday)}</div>
+        </div>
+    `;
+}
+
+/* ---------------- TREE RENDER ---------------- */
+function renderTree() {
+    const roots = people.filter(p => !p.parentId);
+    let html = '<ul>';
+
+    roots.forEach(p => {
+        const spouse = people.find(s => s.id === p.spouseId);
+        const kids = people.filter(c => c.parentId === p.id);
+
+        html += '<li>';
+
+        if (spouse) {
+            html += `<div class="couple">${card(p)}<span class="heart">❤️</span>${card(spouse)}</div>`;
+        } else {
+            html += card(p);
         }
 
-        function updateLastRefreshTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString();
-            document.getElementById('lastUpdate').textContent = timeString;
-        }
-
-        function calculateAge(birthday) {
-            if (!birthday) return null;
-            const today = new Date();
-            const birthDate = new Date(birthday);
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            return age;
-        }
-
-        function getAgeBracket(age) {
-            if (age === null) return 'Unknown';
-            if (age < 13) return '0-12 (Child)';
-            if (age < 20) return '13-19 (Teen)';
-            if (age < 30) return '20-29 (Young Adult)';
-            if (age < 40) return '30-39 (Adult)';
-            if (age < 50) return '40-49 (4th Floor)';
-            if (age < 60) return '50-59 (5th Floor)';
-            if (age < 70) return '60-69 (6th Floor)';
-            return '70+ (Senior Citizen)';
-        }
-
-        function getGenerationLevel(person) {
-            if (!person.parentId) return 0;
-            const parent = people.find(p => p.id === person.parentId);
-            return parent ? getGenerationLevel(parent) + 1 : 0;
-        }
-
-        function getGenerationName(level) {
-            const names = ['Grandparents', 'Parents', 'Children', 'Grandchildren', 'Great-Grandchildren', 'Great-Great-Grandchildren'];
-            return names[level] || `Generation ${level}`;
-        }
-
-        function updateStatistics() {
-            if (people.length === 0) {
-                document.getElementById('statsContainer').style.display = 'none';
-                return;
-            }
-
-            document.getElementById('statsContainer').style.display = 'block';
-
-            const ageBrackets = {};
-            people.forEach(p => {
-                const age = calculateAge(p.birthday);
-                const bracket = getAgeBracket(age);
-                ageBrackets[bracket] = (ageBrackets[bracket] || 0) + 1;
+        if (kids.length) {
+            html += '<ul>';
+            kids.forEach(k => {
+                html += `<li>${card(k)}</li>`;
             });
-
-            const genderCount = { male: 0, female: 0 };
-            people.forEach(p => {
-                genderCount[p.gender]++;
-            });
-
-            const generations = {};
-            people.forEach(p => {
-                const level = getGenerationLevel(p);
-                const genName = getGenerationName(level);
-                generations[genName] = (generations[genName] || 0) + 1;
-            });
-
-            const ages = people.map(p => calculateAge(p.birthday)).filter(a => a !== null);
-            const avgAge = ages.length > 0 ? Math.round(ages.reduce((a, b) => a + b, 0) / ages.length) : 0;
-
-            const statsGrid = document.getElementById('statsGrid');
-            statsGrid.innerHTML = `
-                <div class="stat-card">
-                    <div class="stat-title">Total Family Members</div>
-                    <div class="stat-value">${people.length}</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">Gender Distribution</div>
-                    <div class="stat-value">${genderCount.male}M / ${genderCount.female}F</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">Average Age</div>
-                    <div class="stat-value">${avgAge} years</div>
-                    <div class="stat-details">${ages.length} with known birthdays</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">Age Distribution</div>
-                    <div class="stat-details">
-                        ${Object.entries(ageBrackets).map(([bracket, count]) => 
-                            `${bracket}: ${count}`
-                        ).join('<br>')}
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">Generation Distribution</div>
-                    <div class="stat-details">
-                        ${Object.entries(generations).map(([gen, count]) => 
-                            `${gen}: ${count}`
-                        ).join('<br>')}
-                    </div>
-                </div>
-            `;
+            html += '</ul>';
         }
 
-        function getChildren(personId) {
-            return people.filter(p => p.parentId === personId);
-        }
+        html += '</li>';
+    });
 
-        function getSpouse(personId) {
-            const person = people.find(p => p.id === personId);
-            return person?.spouseId ? people.find(p => p.id === person.spouseId) : null;
-        }
+    html += '</ul>';
+    document.getElementById('tree').innerHTML = html;
+}
 
-        function renderPersonCard(person) {
-            const age = calculateAge(person.birthday);
-            const ageText = age !== null ? `${age} years old` : 'Age unknown';
+renderTree();
 
-            return `
-                <div class="person-card">
-                    <div class="person-avatar ${person.gender}">
-                        ${person.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div class="person-name">${person.name}</div>
-                    <div class="person-info">${person.gender.toUpperCase()}</div>
-                    <div class="person-age">${ageText}</div>
-                </div>
-            `;
-        }
+/* ---------------- PDF DOWNLOAD ---------------- */
+async function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const el = document.getElementById('treeContainer');
 
-        function renderNode(person, renderedSet) {
-            if (renderedSet.has(person.id)) {
-                return '';
-            }
+    const originalOverflow = el.style.overflow;
+    const originalHeight = el.style.maxHeight;
+    el.style.overflow = 'visible';
+    el.style.maxHeight = 'none';
 
-            renderedSet.add(person.id);
-            const spouse = getSpouse(person.id);
-            const children = getChildren(person.id);
+    const canvas = await html2canvas(el, { scale: 2, backgroundColor: '#ffffff' });
+    const img = canvas.toDataURL('image/png');
 
-            let html = '<li>';
-            
-            if (spouse && !renderedSet.has(spouse.id)) {
-                renderedSet.add(spouse.id);
-                html += '<div class="couple-container">';
-                html += renderPersonCard(person);
-                html += '<span class="heart-connector">❤️</span>';
-                html += renderPersonCard(spouse);
-                html += '</div>';
-            } else {
-                html += renderPersonCard(person);
-            }
+    const pdf = new jsPDF('landscape', 'px', 'a4');
+    const w = pdf.internal.pageSize.getWidth();
+    const h = (canvas.height * w) / canvas.width;
 
-            if (children.length > 0) {
-                html += '<ul>';
-                children.forEach(child => {
-                    html += renderNode(child, renderedSet);
-                });
-                html += '</ul>';
-            }
+    pdf.addImage(img, 'PNG', 0, 0, w, h);
+    pdf.save('Otto-Family-Tree.pdf');
 
-            html += '</li>';
-            return html;
-        }
-
-        function renderTree() {
-            const container = document.getElementById('treeContainer');
-            const rootPeople = people.filter(p => !p.parentId);
-
-            if (rootPeople.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <div class="empty-state-icon">👨‍👩‍👧‍👦</div>
-                        <p style="font-size: 18px;">No family members yet.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            const renderedSet = new Set();
-            let html = '<div class="tree"><ul>';
-            
-            rootPeople.forEach(person => {
-                if (!renderedSet.has(person.id)) {
-                    html += renderNode(person, renderedSet);
-                }
-            });
-            
-            html += '</ul></div>';
-            container.innerHTML = html;
-        }
-
-        // Auto-refresh every 30 seconds
-        function startAutoRefresh() {
-            refreshInterval = setInterval(() => {
-                loadData();
-            }, 30000); // 30 seconds
-        }
-
-        // Download PDF function
-        async function downloadPDF() {
-            if (people.length === 0) {
-                alert('No family tree to download');
-                return;
-            }
-
-            const treeElement = document.querySelector('.tree');
-            if (!treeElement) {
-                alert('No tree to download');
-                return;
-            }
-
-            // Show loading message
-            const originalButtonText = event.target.textContent;
-            event.target.textContent = 'Generating PDF...';
-            event.target.disabled = true;
-
-            try {
-                // Use html2pdf.js for better PDF generation
-                const opt = {
-                    margin: 10,
-                    filename: 'otto-family-tree.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { 
-                        scale: 2,
-                        useCORS: true,
-                        logging: false,
-                        backgroundColor: '#ffffff'
-                    },
-                    jsPDF: { 
-                        unit: 'mm', 
-                        format: 'a4', 
-                        orientation: 'landscape' 
-                    }
-                };
-
-                await html2pdf().set(opt).from(treeElement).save();
-
-                // Restore button
-                event.target.textContent = originalButtonText;
-                event.target.disabled = false;
-            } catch (error) {
-                console.error('Error generating PDF:', error);
-                alert('Failed to generate PDF. Please try again.');
-                event.target.textContent = originalButtonText;
-                event.target.disabled = false;
-            }
-        }
-
-        // Initial load
-        loadData();
-        startAutoRefresh();
-
-        // Clean up on page unload
-        window.addEventListener('beforeunload', () => {
-            if (refreshInterval) {
-                clearInterval(refreshInterval);
-            }
-        });
-    </script>
+    el.style.overflow = originalOverflow;
+    el.style.maxHeight = originalHeight;
+}
+</script>
 </body>
 </html>
