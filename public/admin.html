@@ -627,17 +627,6 @@
             return '70+ (Senior Citizen)';
         }
 
-        function getGenerationLevel(person) {
-            if (!person.parentId) return 0;
-            const parent = people.find(p => p.id === person.parentId);
-            return parent ? getGenerationLevel(parent) + 1 : 0;
-        }
-
-        function getGenerationName(level) {
-            const names = ['Grandparents', 'Parents', 'Children', 'Grandchildren', 'Great-Grandchildren', 'Great-Great-Grandchildren'];
-            return names[level] || `Generation ${level}`;
-        }
-
         function updateStatistics() {
             if (people.length === 0) {
                 document.getElementById('statsContainer').style.display = 'none';
@@ -656,13 +645,6 @@
             const genderCount = { male: 0, female: 0 };
             people.forEach(p => {
                 genderCount[p.gender]++;
-            });
-
-            const generations = {};
-            people.forEach(p => {
-                const level = getGenerationLevel(p);
-                const genName = getGenerationName(level);
-                generations[genName] = (generations[genName] || 0) + 1;
             });
 
             const ages = people.map(p => calculateAge(p.birthday)).filter(a => a !== null);
@@ -688,14 +670,6 @@
                     <div class="stat-details">
                         ${Object.entries(ageBrackets).map(([bracket, count]) => 
                             `${bracket}: ${count}`
-                        ).join('<br>')}
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-title">Generation Distribution</div>
-                    <div class="stat-details">
-                        ${Object.entries(generations).map(([gen, count]) => 
-                            `${gen}: ${count}`
                         ).join('<br>')}
                     </div>
                 </div>
