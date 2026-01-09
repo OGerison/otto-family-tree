@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Otto Family Tree</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -66,6 +68,15 @@
 
         .btn-admin:hover {
             background: #5568d3;
+        }
+
+        .btn-download {
+            background: #38b2ac;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #319795;
         }
 
         .stats-container {
@@ -308,14 +319,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Otto Family Tree Viewing Page</h1>
+            <h1>Otto Family Tree</h1>
             <div class="header-actions">
-                <a href="admin.html" class="btn btn-admin">Admin Login</a>
+                <button class="btn btn-download" onclick="downloadPDF()">📄 Download PDF</button>
+                <a href="admin.html" class="btn btn-admin">🔐 Admin Login</a>
             </div>
         </div>
 
         <div class="refresh-info">
-            Tree updates automatically every 30 seconds. Last updated: <span id="lastUpdate">Loading...</span>
+            📊 Tree updates automatically every 30 seconds. Last updated: <span id="lastUpdate">Loading...</span>
         </div>
 
         <div class="stats-container" id="statsContainer" style="display: none;">
@@ -346,6 +358,7 @@
                 const container = document.getElementById('treeContainer');
                 container.innerHTML = `
                     <div class="empty-state">
+                        <div class="empty-state-icon">👨‍👩‍👧‍👦</div>
                         <p style="font-size: 18px;">No family members yet.</p>
                     </div>
                 `;
@@ -523,6 +536,7 @@
             if (rootPeople.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
+                        <div class="empty-state-icon">👨‍👩‍👧‍👦</div>
                         <p style="font-size: 18px;">No family members yet.</p>
                     </div>
                 `;
