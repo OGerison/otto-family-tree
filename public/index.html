@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Otto Family Tree</title>
+    <title>Otto Family Tree Viewing Page</title>
     <style>
         * {
             margin: 0;
@@ -308,14 +308,10 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Otto Family Tree</h1>
+            <h1>Otto Family Tree Viewing Page</h1>
             <div class="header-actions">
-                <a href="admin.html" class="btn btn-admin">🔐 Admin Login</a>
+                <a href="admin.html" class="btn btn-admin">Admin Login</a>
             </div>
-        </div>
-
-        <div class="refresh-info">
-            📊 Tree updates automatically every 30 seconds. Last updated: <span id="lastUpdate">Loading...</span>
         </div>
 
         <div class="stats-container" id="statsContainer" style="display: none;">
@@ -346,7 +342,6 @@
                 const container = document.getElementById('treeContainer');
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">👨‍👩‍👧‍👦</div>
                         <p style="font-size: 18px;">No family members yet.</p>
                     </div>
                 `;
@@ -524,7 +519,6 @@
             if (rootPeople.length === 0) {
                 container.innerHTML = `
                     <div class="empty-state">
-                        <div class="empty-state-icon">👨‍👩‍👧‍👦</div>
                         <p style="font-size: 18px;">No family members yet.</p>
                     </div>
                 `;
